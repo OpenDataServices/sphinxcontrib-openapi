@@ -15,6 +15,8 @@ import io
 import itertools
 import collections
 
+import json
+import tempfile
 import yaml
 import jsonschema
 
@@ -141,6 +143,15 @@ def _normalize_spec(spec, **options):
             method['parameters'].extend(parameters)
 
 
+def _jsonschema(properties):
+    schema = properties.get('responses', {}).get('200', {}).get('schema', {})
+    with tempfile.NamedTemporaryFile('w', delete=False) as fp:
+        json.dump(schema , fp)
+    yield ''
+    yield '.. jsonschema:: {}'.format(fp.name)
+    yield ''
+
+
 def openapi2httpdomain(spec, **options):
     generators = []
 
@@ -163,6 +174,7 @@ def openapi2httpdomain(spec, **options):
     for endpoint in options.get('paths', spec['paths']):
         for method, properties in spec['paths'][endpoint].items():
             generators.append(_httpresource(endpoint, method, properties))
+            generators.append(_jsonschema(properties))
 
     return iter(itertools.chain(*generators))
 
