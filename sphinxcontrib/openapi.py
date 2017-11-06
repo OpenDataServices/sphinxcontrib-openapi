@@ -147,6 +147,7 @@ def _jsonschema(properties):
     schema = properties.get('responses', {}).get('200', {}).get('schema', {})
     with tempfile.NamedTemporaryFile('w', delete=False) as fp:
         json.dump(schema , fp)
+    yield '**200 Response Body:**'
     yield ''
     yield '.. jsonschema:: {}'.format(fp.name)
     yield ''
