@@ -149,7 +149,7 @@ def _jsonschema(properties):
         json.dump(schema , fp)
     yield '**200 Response Body:**'
     yield ''
-    yield '.. jsonschema:: {}'.format(fp.name)
+    yield '.. jsonschema-array:: {}'.format(fp.name)
     yield ''
 
 
